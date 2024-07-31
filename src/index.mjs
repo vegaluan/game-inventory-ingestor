@@ -1,14 +1,14 @@
 'use strict';
 
-import  {extractor} from "./services/steam.mjs"
+import  {transform} from "./services/steam.mjs"
 
 
 
 export const handler = async (event, context, callback) => {
     console.log('LogScheduledEvent');
-    await extractor();
+    await transform();
     callback(null, 'Finished');
 }
 
 
-await extractor(); 
+await transform(); 

@@ -1,41 +1,42 @@
 import axios from "axios";
-
-
-//iso_4217 
-const currency = "USD";  
-
+import { STEAM_API_GET_ASSETS, STEAM_API_GET_ASSET_NAME, STEAM_APP_ID, STEAM_CURRENCY, STEAM_ID } from "../config/config.mjs";
 
 const getAssetName = async (assetId) => {
-        let response = await axios.get("http://api.steampowered.com/ISteamEconomy/GetAssetClassInfo/v0001/?key=" + process.env.steamid + "&appid=" + process.env.appid + "&language=en&class_count=" + 1 + "&classid0=" + assetId);
-         return [...Object.values(response.data.result).map(x => x.name)];
+    try {
+        
+        let url = `${STEAM_API_GET_ASSET_NAME}?key=${STEAM_ID}&appid=${STEAM_APP_ID}&language=en&class_count=1&classid0=${assetId}`
+        let response = await axios.get(url);
+        return response.data.result[assetId]?.name || '';
+    } catch (e) {
+        console.error(e.message);
+    }
 };
-const extractor = async () => {
-    axios.get("http://api.steampowered.com/ISteamEconomy/GetAssetPrices/v0001/?appid=" + process.env.appid + "&key=" + process.env.steamid + "&currency=" + currency,
-        {
-            headers: {
-                "Accept": "application/json"
+
+const transform = async () => {
+    try {
+        let url = `${STEAM_API_GET_ASSETS}?key=${STEAM_ID}&appid=${STEAM_APP_ID}&currency=${STEAM_CURRENCY}`
+        let res = await axios.get(url);
+        let assets = res.data.result.assets || [];
+
+
+
+        const promises = assets.map(async (asset) => {
+            if (asset && asset.classid) {
+                const name =  await getAssetName(asset.classid);
+                return {
+                    classid: asset.classid,
+                    name: name,
+                    price: Object.values(asset.prices).flat().toString(),
+                };
             }
-        }
-    )
-        .then((res) => {
-            const inventory = [];
-            res.data.result.assets.forEach(element => {
-                if (element && element.classid) {
-                        getAssetName(element.classid).then((res) => {
-                            console.log(element.classid);
-                            let asset = {
-                                classid: element.classid,
-                                name: Object.values(res).flat().toString(),
-                                price: Object.values(element.prices).flat().toString()
-                            };
-                            inventory.push(asset);
-                            console.log(inventory)
-                        });
-                    }
-            });
-        })
-        .catch((err) => console.log(err));
+        });
+
+        const inventory = await Promise.all(promises);
+        console.log(inventory); 
+    } catch (e) {
+        console.error(e.message);
+    }
 };
 
-
-export { extractor }; 
+export { transform };
+    

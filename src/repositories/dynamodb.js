@@ -11,9 +11,9 @@ const dbHandler = async (data) => {
         new PutCommand({
           TableName: tableName,
           Item: {
-            id: requestJSON.id,
-            price: requestJSON.price,
-            name: requestJSON.name,
+            id: data.id,
+            price: data.price,
+            name: data.name,
           },
         })
       ).then((res) => {

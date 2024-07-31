@@ -1,6 +1,6 @@
 'use strict';
 
-import  {extractor} from "./api/steamapi.mjs"
+import  {extractor} from "./services/steam.mjs"
 
 
 
@@ -11,4 +11,4 @@ export const handler = async (event, context, callback) => {
 }
 
 
-//await extractor();
+await extractor(); 

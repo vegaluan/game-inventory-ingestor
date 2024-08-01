@@ -1,5 +1,3 @@
-'use strict';
-
 import { transform } from "./services/steam.mjs"
 
 

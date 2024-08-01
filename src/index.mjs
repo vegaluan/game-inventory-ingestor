@@ -1,6 +1,6 @@
 'use strict';
 
-import  {transform} from "./services/steam.mjs"
+import { transform } from "./services/steam.mjs"
 
 
 

@@ -7,17 +7,17 @@ const client = new DynamoDBClient({});
 const tableName = "assets";
 
 const dbHandler = async (data) => {
-    dynamo.send(
-        new PutCommand({
-          TableName: tableName,
-          Item: {
-            id: data.id,
-            price: data.price,
-            name: data.name,
-          },
-        })
-      ).then((res) => {
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
+  dynamo.send(
+    new PutCommand({
+      TableName: tableName,
+      Item: {
+        id: data.id,
+        price: data.price,
+        name: data.name,
+      },
+    })
+  ).then((res) => {
+    console.log(res);
+  })
+    .catch((err) => console.log(err));
 }
